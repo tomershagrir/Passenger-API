@@ -61,6 +61,18 @@ ENVIRONMENTS = {
         'REDIRECT_URL': '',
         'API_ROOT_URL': 'https://api.tdispatch.com/passenger',
         },
+    'andreas': {
+        'API_KEY': '6cc57fbdb46add230d3fd02c772e9ff4',
+        'AUTH_CODE': '51a4ab6cc8bf072ef65dea70', # Must be requested to /passenger/v1/oauth2/auth/
+        'REFRESH_TOKEN': 'UXeuEdHOWF7qzMdIr42SRBI5gC3dZCAD', # Must be copied from token code URL after authorization
+        'ACCESS_TOKEN': '51a4ab6cc8bf072ef65dea6f', # Must be copied from token code URL after authorization
+        'CLIENT_ID': 'Ykut3BWdBc@tdispatch.com',
+        'CLIENT_SECRET': 'wPc4JZ7gP7wERKZAs7scpvXYgiXizWHP',
+        'API_ROOT_URL': 'http://api.t-dispatch.co/passenger',
+        'REDIRECT_URL': '',
+        'USER_USERNAME': 'andreas.s.wiede@gmail.com',
+        'USER_PASSWORD': '12345',
+    },
     }
 ENV = ENVIRONMENTS.get(sys.argv[1] if len(sys.argv) > 1 else 'staging')
 if not ENV:
@@ -90,7 +102,6 @@ class PassengerAPIClient(object):
     auth_code = None # Must be informed manually
     refresh_token = None # Must be informed manually
     access_token = None # Must be informed manually
-    
 
     def __init__(self, client_id, client_secret, redirect_url, base_url=ENV['API_ROOT_URL']+"/v1/"):
         """Parameters:
@@ -284,7 +295,7 @@ if api.access_token:
     api.passenger_bookings(pickup_time='2012-11-08T17:56:46Z')
     api.passenger_bookings(status='incoming,draft')
     
-    car_types = api.cartype_list()['car_types']
+    car_types = api.cartype_list()['vehicle_types']
     
     booking = api.passenger_booking_create(
         customer={'name':'Andy Warhol', 'phone':'+49123470416', 'email':'andy@tdispatch.com'},
@@ -313,7 +324,7 @@ if api.access_token:
     api.passenger_regular_locations()
     reg_loc = api.passenger_regular_location_create(
         name="Home, sweet home",
-        keywords="magdeburg,home, Eugen",
+        keywords="magdeburg,home, Andreas",
         location={'address':u'Lessingstraße 23', 'location':{'lat':52.12588,'lng':11.61150}, 'postcode':'39108'}
     )['location']
     api.passenger_regular_location_get(reg_loc['pk'])
@@ -326,10 +337,11 @@ if api.access_token:
         "from_regular_location_id": "515470002769a110b26260bd",
         "to_regular_location_id": "5159a05d2769a10af21c26d4"
     }
-    reg_journey = api.passenger_regular_journeys_create(**journey_create_params)['journey']
-    api.passenger_regular_journeys_get(reg_journey['pk'])
-    api.passenger_regular_journeys_update(pk=reg_journey['pk'], name="German home")
-    api.passenger_regular_journeys_delete(pk=reg_journey['pk'])
+    reg_journey = api.passenger_regular_journeys_create(**journey_create_params).get('journey', None)
+    if reg_journey:
+        api.passenger_regular_journeys_get(reg_journey['pk'])
+        api.passenger_regular_journeys_update(pk=reg_journey['pk'], name="German home")
+        api.passenger_regular_journeys_delete(pk=reg_journey['pk'])
     api.drivers_nearby(location={'lng':13.378729824,'lat':52.5373399193}, radius=2, limit=15)
     api.account_fleetdata_get()
     api.account_preferences_get()
@@ -337,7 +349,7 @@ if api.access_token:
         birth_date = '1985-10-21T00:00:00',
         location={'address':u'Lessingstraße 23', 'location':{'lat':52.12588,'lng':11.61150}, 'postcode':'39108'},
         use_account_location_as_pickup = True,
-        first_name = 'Eugen'
+        first_name = 'Andreas'
     )
     
     api.passenger_location_search(
@@ -359,10 +371,10 @@ elif api.username:
 else:
     print 'Creating new passenger'
     print api.account_create(
-        first_name = 'Eugen',
-        last_name = 'von Shevchik',
-        phone = '+380975461272',
-        email = 'eugeny5@tdispatch.com',
+        first_name = 'Andreas',
+        last_name = 'Wiede',
+        phone = '+49015738511485',
+        email = 'andreas.s.wiede@gmail.com',
         password = '12345',
         client_id = ENV['CLIENT_ID'],
     )
