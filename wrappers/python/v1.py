@@ -280,7 +280,7 @@ api.access_token = ENV.get('ACCESS_TOKEN')
 api.username = ENV.get('USER_USERNAME')
 api.password = ENV.get('USER_PASSWORD')
 
-print '-'*40
+print '-'*40 
 if api.access_token:
     print 'Testing the API methods'
 
