@@ -191,6 +191,7 @@ class PassengerAPIClient(object):
     # Method for API
 
     def api_info(self):
+        echo "test"
         return self.request('GET','api-info')
 
     # Methods for the Booking
